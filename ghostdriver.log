@@ -1,0 +1,18 @@
+[INFO  - 2019-09-06T06:11:33.819Z] GhostDriver - Main - running on port 59055
+[INFO  - 2019-09-06T06:11:34.719Z] Session [2da261a0-d06d-11e9-a291-d55992f1812d] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
+[INFO  - 2019-09-06T06:11:34.719Z] Session [2da261a0-d06d-11e9-a291-d55992f1812d] - page.customHeaders:  - {}
+[INFO  - 2019-09-06T06:11:34.719Z] Session [2da261a0-d06d-11e9-a291-d55992f1812d] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"linux-unknown-64bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2019-09-06T06:11:34.720Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 2da261a0-d06d-11e9-a291-d55992f1812d
+[ERROR - 2019-09-06T06:11:43.400Z] Session [2da261a0-d06d-11e9-a291-d55992f1812d] - page.onError - msg: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2019-09-06T06:11:43.401Z] Session [2da261a0-d06d-11e9-a291-d55992f1812d] - page.onError - stack:
+  (anonymous function) (https://www.myscore.ru/x/js/bundle.js?serial=1733000000:1)
+  n (https://www.myscore.ru/x/js/bundle.js?serial=1733000000:1)
+  (anonymous function) (https://www.myscore.ru/x/js/bundle.js?serial=1733000000:1)
+  n (https://www.myscore.ru/x/js/bundle.js?serial=1733000000:1)
+  (anonymous function) (https://www.myscore.ru/x/js/bundle.js?serial=1733000000:1)
+  n (https://www.myscore.ru/x/js/bundle.js?serial=1733000000:1)
+  (anonymous function) (https://www.myscore.ru/x/js/bundle.js?serial=1733000000:1)
+
+  phantomjs://platform/console++.js:263 in error
