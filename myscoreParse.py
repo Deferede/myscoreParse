@@ -190,21 +190,21 @@ def main_parse(browser, id_list):
         total_block = html_ODD.find(id='block-under-over-ft')
         tables = total_block.find_all('table', class_='odds')
         for table in tables:
-            print(table['id'].split('_')[-1][2])
-            if table['id'].split('_')[-1][2] != '2' or table['id'].split('_')[-1][2] != '7':
-               for tr in table.find('tbody').find_all('tr'):
-                   tds = tr.find_all('td')
-                   if tds[1].text != '1' and tds[1].text != '0.5':
-                       if re.search('down', tds[2].find('span')['class']):
-                           bookmaker = tds[0].find('a')['title'].strip()
-                           total = tds[1].text.strip()
-                           coeff_over = '>'+ tds[2].text.strip()
-                           odds_total.append({
-                               'bookmaker': bookmaker,
-                               'total': total,
-                               'coeff_over': coeff_over,
-                           })
-                       
+            # if table['id'].split('_')[-1][2] != '2' or table['id'].split('_')[-1][2] != '7':
+            for tr in table.find('tbody').find_all('tr'):
+                tds = tr.find_all('td')
+                if  str(float(tds[1].text))[2] == '2' or str(float(tds[1].text))[2] == '7':
+                    continue
+                if tds[2].find('span')['class'][-1] == 'down':
+                    bookmaker = tds[0].find('a')['title'].strip()
+                    total = tds[1].text.strip()
+                    coeff_over = '>'+ tds[2].text.strip()
+                    odds_total.append({
+                        'bookmaker': bookmaker,
+                        'total': total,
+                        'coeff_over': coeff_over,
+                    })
+                
         ###
         ### asian_total
 
