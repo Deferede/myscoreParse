@@ -263,3 +263,31 @@ def save_xlsx_urls(links_to_matches, path='urls_'):
         worksheet.write(row, col, link['url'])
     
     workbook.close()
+    
+def save_xlsx_teams(links_to_matches, path='teams_'):
+    
+    workbook = xlsxwriter.Workbook(path + datetime.strftime(datetime.now(), "%d-%m-%Y") + '.xlsx')
+    worksheet = workbook.add_worksheet()
+
+    columns = [
+        'Страна',
+        'Команда',
+        'Ссылка',
+    ]
+
+    row = 0
+    col = 0
+    for column in columns:
+        worksheet.write(row, col, column)
+        col += 1
+    
+    for link in links_to_matches:
+        col = 0
+        row += 1
+        worksheet.write(row, col, link['country'])
+        col += 1
+        worksheet.write(row, col, link['teamName'])
+        col += 1
+        worksheet.write(row, col, link['teamLogo'])
+    
+    workbook.close()

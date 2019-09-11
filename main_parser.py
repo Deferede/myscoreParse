@@ -23,7 +23,7 @@ def get_request_BS_html(session, url):
     global current_proxy
     while True:
         try:
-            print('Пробуем проксю ' + current_proxy['https'])
+            print('Пробуем проксю ' + current_proxy['https'] + ' на ' + url)
             response = session.get(url, headers=headers, proxies=current_proxy, timeout=3.0)
             if response.status_code != 200:
                 print('Ошибка соединения')
@@ -32,10 +32,11 @@ def get_request_BS_html(session, url):
             try:
                 check = html.find('title').text.strip()
                 if check.startswith('Доступ'):
+                    print('Попали на страницу с блокировкой')
                     current_proxy = {'https': choice(proxies_list)}
                     continue
             except Exception as e:
-                print('Ошибка на строке 38')
+                var = 1
             return html
         except Exception as e:
             current_proxy = {'https': choice(proxies_list)}
@@ -71,9 +72,7 @@ def main_parse(id_list):
         score_main = html.find(id='event_detail_current_result').text.strip()
         for team in teams:
             linkToTeam = re.search('\(\'(.*)\'\)',team.find('a', class_='participant-imglink')['onclick']).group(1).strip()
-            teams_links.append({
-                'link_to_team': linkToTeam
-            })
+            teams_links.append(linkToTeam)
 
         ##### H2H
         html_H2H = get_request_BS_html(session, 'https://d.myscore.ru/x/feed/d_hh_' + id['id'] + '_ru_1')
@@ -236,4 +235,5 @@ def main_parse(id_list):
         # result.append({
         # 'id': id[4:]
         # })
-    return matchs_details, urls
+        teams_links = list(set(teams_links))
+    return matchs_details, urls, teams_links
