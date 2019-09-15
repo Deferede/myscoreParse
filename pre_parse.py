@@ -18,8 +18,8 @@ def init_browser(headless=False, browser='firefox'):
         # 2 - Block all images
         # 3 - Block 3rd party images
         profile.set_preference("permissions.default.image", 2)
-        # browser = webdriver.Firefox(executable_path='geckodriver.exe', firefox_profile=profile, options=options)
-        browser = webdriver.Firefox(firefox_profile=profile, options=options)
+        browser = webdriver.Firefox(executable_path='geckodriver.exe', firefox_profile=profile, options=options)
+        # browser = webdriver.Firefox(firefox_profile=profile, options=options)
         print ("Firefox Initialized")
     elif browser == 'chrome':
         browser = webdriver.Firefox(options=options)

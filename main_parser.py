@@ -48,7 +48,6 @@ def main_parse(id_list):
     teams_links = []
     matchs_details = []
     urls = []
-    print(len(id_list))
     for idx, id in enumerate(id_list):
         print(id)
         print ('Парсинг {}%'.format(float('{:.3f}'.format((idx / len(id_list) * 100)))))
@@ -231,9 +230,5 @@ def main_parse(id_list):
             'odds_total': odds_total,
         })
 
-        # result = []
-        # result.append({
-        # 'id': id[4:]
-        # })
         teams_links = list(set(teams_links))
     return matchs_details, urls, teams_links
