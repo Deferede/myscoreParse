@@ -1,3 +1,6 @@
+ #!/usr/bin/python
+ # -*- coding: utf-8 -*-
+
 import requests, time, re, sys
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -23,16 +26,16 @@ def get_request_BS_html(session, url):
     global current_proxy
     while True:
         try:
-            print('Пробуем проксю ' + current_proxy['https'] + ' на ' + url)
+            # print('Пробуем проксю ' + current_proxy['https'] + ' на ' + url)
             response = session.get(url, headers=headers, proxies=current_proxy, timeout=3.0)
             if response.status_code != 200:
-                print('Ошибка соединения')
+                # print('Ошибка соединения')
                 continue
             html = BeautifulSoup(response.text, 'lxml')
             try:
                 check = html.find('title').text.strip()
                 if check.startswith('Доступ'):
-                    print('Попали на страницу с блокировкой')
+                    # print('Попали на страницу с блокировкой')
                     current_proxy = {'https': choice(proxies_list)}
                     continue
             except Exception as e:
@@ -40,7 +43,7 @@ def get_request_BS_html(session, url):
             return html
         except Exception as e:
             current_proxy = {'https': choice(proxies_list)}
-            print('Ошибка соединения исключение Поменяли прокси')
+            # print('Ошибка соединения исключение Поменяли прокси')
             time.sleep(1)
 
 def main_parse(id_list):
@@ -50,7 +53,7 @@ def main_parse(id_list):
     urls = []
     for idx, id in enumerate(id_list):
         print(id)
-        print ('Парсинг {}%'.format(float('{:.3f}'.format((idx / len(id_list) * 100)))))
+        print ('{}%'.format(float('{:.3f}'.format((idx / len(id_list) * 100)))))
         urls.append({
             'url': 'https://www.myscore.ru/match/' + id['id']
         })
@@ -62,17 +65,25 @@ def main_parse(id_list):
         descriptionMatch = html.find('meta', {'property':'og:description'}).get('content')
         descriptionMatch = descriptionMatch.split(":")
         country_main = descriptionMatch.pop(0).strip()
-        descriptionMatch = descriptionMatch[0].split("-")
-        tour_main = descriptionMatch.pop().strip()
-        leage_main = ''.join(descriptionMatch).strip()
+        try:
+            descriptionMatch = descriptionMatch[0].split(" - ")
+            leage_main = descriptionMatch[0].strip()
+        except Exception:
+            leage_main = ''.join(descriptionMatch).strip()
+
+        # tour_main = descriptionMatch.pop().strip()
+       
         teams = html.find_all('div', class_='tname__text')
         team_main1 = teams[0].find('a', class_='participant-imglink').text.strip()
         team_main2 = teams[1].find('a', class_='participant-imglink').text.strip()
         score_main = html.find(id='event_detail_current_result').text.strip()
+        
+        ids = []
         for team in teams:
             linkToTeam = re.search('\(\'(.*)\'\)',team.find('a', class_='participant-imglink')['onclick']).group(1).strip()
+            ids.append(linkToTeam)
             teams_links.append(linkToTeam)
-
+            
         ##### H2H
         html_H2H = get_request_BS_html(session, 'https://d.myscore.ru/x/feed/d_hh_' + id['id'] + '_ru_1')
 
@@ -111,6 +122,17 @@ def main_parse(id_list):
                 'score': '',
                 'match_result': '',
             })
+        if len(gamesHome) < 5:
+            for i in range(5 - len(gamesHome)):
+                gamesHome.append({
+                    'date': '',
+                    'country': '',
+                    'leage': '',
+                    'team1': '',
+                    'team2': '',
+                    'score': '',
+                    'match_result': '',
+                })
         try:
             for match in tableGuest.find('tbody').find_all('tr', limit=5):
                 date = match.find('span', class_='date').text.strip()
@@ -140,7 +162,17 @@ def main_parse(id_list):
                 'score': '',
                 'match_result': '',
             })
-
+        if len(gamesGuest) < 5:
+            for i in range(5 - len(gamesGuest)):
+                gamesGuest.append({
+                    'date': '',
+                    'country': '',
+                    'leage': '',
+                    'team1': '',
+                    'team2': '',
+                    'score': '',
+                    'match_result': '',
+                })
         for match in tableBoth.find('tbody').find_all('tr', limit=5):
             try:
                 date = match.find('span', class_='date').text.strip()
@@ -200,14 +232,36 @@ def main_parse(id_list):
                         if coeff_over >= 1.7 and coeff_over <= 2.1:
                             odds_total.append({
                                 'bookmaker': bookmaker,
-                                'total': total,
+                                'total': '<' + total,
                                 'coeff_over': coeff_over,
                             })
+                        # else:
+                        #     odds_total.append({
+                        #         'bookmaker': '-',
+                        #         'total': '-',
+                        #         'coeff_over': '-',
+                        #     })
+                    elif tds[3].find('span')['class'][-1] == 'down':
+                        bookmaker = tds[0].find('a')['title'].strip()
+                        total = tds[1].text.strip()
+                        coeff_over = float(tds[2].text.strip())
+                        if coeff_over >= 1.7 and coeff_over <= 2.1:
+                            odds_total.append({
+                                'bookmaker': bookmaker,
+                                'total': '>' + total,
+                                'coeff_over': coeff_over,
+                            })
+                        # else:
+                        #     odds_total.append({
+                        #         'bookmaker': '-',
+                        #         'total': '-',
+                        #         'coeff_over': '-',
+                        #     })
         except Exception as e:
             odds_total.append({
-                'bookmaker': '',
-                'total': '',
-                'coeff_over': '',
+                'bookmaker': '-',
+                'total': '-',
+                'coeff_over': '-',
             })
 
 
@@ -220,13 +274,15 @@ def main_parse(id_list):
             'time': time_main,
             'country': country_main,
             'leage': leage_main,
-            'tour': tour_main,
+            # 'tour': tour_main,
             'team1': team_main1,
+            'ID1': ids[0].replace('/team/','').replace('/','-'),
             'team2': team_main2,
+            'ID2': ids[1].replace('/team/','').replace('/','-'),
             'score': score_main,
-            'gamesHome': gamesHome,
-            'gamesGuest': gamesGuest,
-            'gamesBoth': gamesBoth,
+            # 'gamesHome': gamesHome,
+            # 'gamesGuest': gamesGuest,
+            # 'gamesBoth': gamesBoth,
             'odds_total': odds_total,
         })
 
