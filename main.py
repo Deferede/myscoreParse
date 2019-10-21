@@ -1,3 +1,6 @@
+ #!/usr/bin/python
+ # -*- coding: utf-8 -*-
+
 import sys
 import pre_parse, main_parser, team_parser, excel_saver
 import id_lists_test
@@ -10,8 +13,8 @@ def split(a, n):
 
 def main():
     start_time = time.time()
-    ids_list = pre_parse.get_matchs_id()
-    # ids_list = id_lists_test.id_lists
+    # ids_list = pre_parse.get_matchs_id()
+    ids_list = id_lists_test.id_lists
 
     matchs_details, links_to_matchs, links_to_teams = main_parser.main_parse(ids_list)
 
@@ -25,8 +28,8 @@ def main():
 
 def main_threads():
     start_time = time.time()
-    ids_list = pre_parse.get_matchs_id()
-    # ids_list = id_lists_test.id_lists
+    # ids_list = pre_parse.get_matchs_id()
+    ids_list = id_lists_test.id_lists
     print(len(ids_list))
     print('***************************************')
 
@@ -37,8 +40,7 @@ def main_threads():
     async_result2 = pool.apply_async(main_parser.main_parse, (ids_list[1],))
     async_result3 = pool.apply_async(main_parser.main_parse, (ids_list[2],))
     async_result4 = pool.apply_async(main_parser.main_parse, (ids_list[3],))
-    # thread1 = Thread(target=main_parser.main_parse, args=(ids_list,))
-    # thread1.start()
+
 
     matchs_details1, links_to_matchs1, links_to_teams1 = async_result1.get()
     matchs_details2, links_to_matchs2, links_to_teams2 = async_result2.get()
@@ -57,16 +59,12 @@ def main_threads():
     links_to_teams1.extend(links_to_teams3)
     links_to_teams1.extend(links_to_teams4)
 
-
-    # matchs_details, links_to_matchs, links_to_teams = main_parser.main_parse(ids_list)
-
     links_to_teams = list(split(links_to_teams1, 4))
 
     async_result1 = pool.apply_async(team_parser.team_parse, (links_to_teams[0],))
     async_result2 = pool.apply_async(team_parser.team_parse, (links_to_teams[1],))
     async_result3 = pool.apply_async(team_parser.team_parse, (links_to_teams[2],))
     async_result4 = pool.apply_async(team_parser.team_parse, (links_to_teams[3],))
-
 
     links_to_teams1 = async_result1.get()
     links_to_teams2 = async_result2.get()
@@ -77,18 +75,18 @@ def main_threads():
     links_to_teams1.extend(links_to_teams3)
     links_to_teams1.extend(links_to_teams4)
 
-    # links_to_teams = team_parser.team_parse(links_to_teams)
-
-
-
     excel_saver.save_xlsx_match_details(matchs_details1)
     excel_saver.save_xlsx_urls(links_to_matchs1)
     excel_saver.save_xlsx_teams(links_to_teams1)
+
+    excel_saver.save_xlsx_match_details(matchs_details1, 'matches')
+    excel_saver.save_xlsx_urls(links_to_matchs1, 'urls')
+    excel_saver.save_xlsx_teams(links_to_teams1, 'teams')
     
     print("--- %s seconds ---" % (time.time() - start_time))
 
 
 
 if __name__ == '__main__':
-    main()
-    # main_threads()
+    # main()
+    main_threads()

@@ -1,3 +1,5 @@
+ #!/usr/bin/python
+ # -*- coding: utf-8 -*-
 
 def get_proxies():
     proxies = open('proxies.txt').read().split('\n')

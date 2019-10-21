@@ -1,3 +1,6 @@
+ #!/usr/bin/python
+ # -*- coding: utf-8 -*-
+
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,7 +11,7 @@ from bs4 import BeautifulSoup
 SITE_URL = 'https://www.myscore.ru/'
 
 
-def init_browser(headless=False, browser='firefox'):
+def init_browser(headless=True, browser='firefox'):
     options = Options()
 
     options.headless = headless
@@ -18,8 +21,8 @@ def init_browser(headless=False, browser='firefox'):
         # 2 - Block all images
         # 3 - Block 3rd party images
         profile.set_preference("permissions.default.image", 2)
-        browser = webdriver.Firefox(executable_path='geckodriver.exe', firefox_profile=profile, options=options)
-        # browser = webdriver.Firefox(firefox_profile=profile, options=options)
+        # browser = webdriver.Firefox(executable_path='geckodriver.exe', firefox_profile=profile, options=options)
+        browser = webdriver.Firefox(firefox_profile=profile, options=options)
         print ("Firefox Initialized")
     elif browser == 'chrome':
         browser = webdriver.Firefox(options=options)
@@ -53,7 +56,7 @@ def get_matchs_id():
             })
 
     for i in range(8):
-        print ('Листинг {}%'.format(float((i / 8 * 100))))
+        print ('listing {}%'.format(float((i / 8 * 100))))
         try:
             WebDriverWait(browser, 30, ignored_exceptions=True).until(EC.invisibility_of_element(loadingOverlay))
             browser.find_element_by_class_name('calendar__direction--tomorrow').click()
@@ -67,6 +70,6 @@ def get_matchs_id():
                         'id': id[4:]
                     })
         except Exception as e:
-            print('Завтра больше нет=(')
+            print('fail')
     browser.quit()
     return matchs_id

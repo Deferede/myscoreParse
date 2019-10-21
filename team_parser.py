@@ -1,3 +1,6 @@
+ #!/usr/bin/python
+ # -*- coding: utf-8 -*-
+
 import main_parser
 import re
 
@@ -8,7 +11,7 @@ def team_parse(links_to_teams):
 
 
     for idx, link in enumerate(links_to_teams):
-        print ('Парсинг команд {}%'.format(float('{:.3f}'.format((idx / len(links_to_teams) * 100)))))
+        print ('command parse {}%'.format(float('{:.3f}'.format((idx / len(links_to_teams) * 100)))))
         html = main_parser.get_request_BS_html(session, mainUrl + link)
 
         country = html.find('h2', class_='tournament').find_all('a')[-1].text

@@ -1,15 +1,21 @@
+ #!/usr/bin/python
+ # -*- coding: utf-8 -*-
+
 import xlsxwriter
 from datetime import datetime
 
 def save_xlsx_match_details(matchs_details, path='matchs_'):
-    workbook = xlsxwriter.Workbook(path + datetime.strftime(datetime.now(), "%d-%m-%Y") + '.xlsx')
+    if path.startswith('matchs_'):
+        workbook = xlsxwriter.Workbook(path + datetime.strftime(datetime.now(), "%d-%m-%Y") + '.xlsx')
+    else:
+        workbook = xlsxwriter.Workbook(path + '.xlsx')
     worksheet = workbook.add_worksheet()
 
     columns = [
     'Дата',
     'Страна',
     'Чемпионат',
-    'Тур',
+    # 'Тур',
     'Команда 1',
     'Команда 2',
     'Счет',
@@ -141,8 +147,8 @@ def save_xlsx_match_details(matchs_details, path='matchs_'):
         col += 1
         worksheet.write(row, col, matchs_details['leage'])
         col += 1
-        worksheet.write(row, col, matchs_details['tour'])
-        col += 1
+        # worksheet.write(row, col, matchs_details['tour'])
+        # col += 1
         worksheet.write(row, col, matchs_details['team1'])
         col += 1
         worksheet.write(row, col, matchs_details['team2'])
@@ -246,7 +252,10 @@ def save_xlsx_match_details(matchs_details, path='matchs_'):
     workbook.close()
 
 def save_xlsx_urls(links_to_matches, path='urls_'):
-    workbook = xlsxwriter.Workbook(path + datetime.strftime(datetime.now(), "%d-%m-%Y") + '.xlsx')
+    if path.startswith('urls_'):
+        workbook = xlsxwriter.Workbook(path + datetime.strftime(datetime.now(), "%d-%m-%Y") + '.xlsx')
+    else:
+        workbook = xlsxwriter.Workbook(path + '.xlsx')
     worksheet = workbook.add_worksheet()
 
     columns = [
@@ -265,8 +274,10 @@ def save_xlsx_urls(links_to_matches, path='urls_'):
     workbook.close()
     
 def save_xlsx_teams(links_to_matches, path='teams_'):
-    
-    workbook = xlsxwriter.Workbook(path + datetime.strftime(datetime.now(), "%d-%m-%Y") + '.xlsx')
+    if path.startswith('teams_'):
+        workbook = xlsxwriter.Workbook(path + datetime.strftime(datetime.now(), "%d-%m-%Y") + '.xlsx')
+    else:
+        workbook = xlsxwriter.Workbook(path + '.xlsx')
     worksheet = workbook.add_worksheet()
 
     columns = [
